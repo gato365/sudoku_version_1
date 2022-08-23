@@ -1,0 +1,71 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+# R Setup
+
+```{r}
+library(tidyverse)
+```
+
+# A. Creating A Sudoku Board in R
+
+## 1. Set up data frame
+
+```{r}
+row_values = c(1,1,2,2,1,1,2,2,3,4,3,4,3,3,4,4)
+col_values = c(1,2,1,2,3,4,3,4,1,1,2,2,3,4,3,4)
+squ_values = c('TL','TL','TL','TL',
+               'TR','TR','TR','TR',
+               'BL','BL','BL','BL',
+               'BR','BR','BR','BR')
+pos_values = c('P1','P2','P3','P4',
+               'P1','P2','P3','P4',
+               'P1','P3','P2','P4',
+               'P1','P2','P3','P4')
+
+sudoku_df = data.frame(row_values,col_values,squ_values,pos_values)
+
+tl_p1234 = sample(4,4,replace = FALSE)
+
+tl_p12 = tl_p1234[1:2]
+tl_p34 = tl_p1234[3:4]
+
+## Top Right
+tr_p12 = tl_p34[sample(2,2)]
+tr_p34 = tl_p12[sample(2,2)]
+
+tr_p1234 = c(tr_p12,tr_p34)
+
+## Bottom Left
+bl_p13 = tl_p1234[c(2,4)][sample(2,2)]
+bl_p24 = tl_p1234[c(1,3)][sample(2,2)]
+
+bl_p1234 = c(bl_p13[1],bl_p24[1],bl_p13[2],bl_p24[2])
+
+## Bottom Right
+br_p12 = c(bl_p1234[c(3,4)][sample(2,2)])
+br_p34 = c(bl_p1234[c(1,2)][sample(2,2)])
+br_p1234 = c(br_p12,br_p34)
+
+
+## Fix Algorithm
+all_values = c(tl_p1234,tr_p1234,
+               bl_p1234,br_p1234)
+
+mod_1_sudoku_df = sudoku_df %>% 
+  mutate(values = all_values) %>% 
+  arrange(row_values,col_values)
+
+
+```
+
+## 2. Check Functions
+
+-   Rows
+-   Columns
+-   Squares
+
+# B. Creating A Sudoku Board in Python (CS mindset)
