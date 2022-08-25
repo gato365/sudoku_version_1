@@ -66,14 +66,13 @@ all_values_v4 = c(tl_p1234,tr_p1234,bl_p1234,
                  br_p12_v2,br_p34_v2)
 
 
-bind_cols(v1 = all_values_v1,
+v_df = bind_cols(v1 = all_values_v1,
           v2 = all_values_v2,
           v3 = all_values_v3,
           v4 = all_values_v4)
 
 mod_1_sudoku_df = sudoku_df %>% 
-  mutate(values = all_values) %>% 
-  arrange(row_values,col_values)
+  bind_cols(v_df)
 
 
 ```
