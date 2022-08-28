@@ -12,6 +12,19 @@ library(tidyverse)
 ```{r}
 map_board_df = readxl::read_xlsx('empty_board.xlsx',sheet = 'mapping') %>% 
   mutate(values = sample(4,4)) %>%  ## Determine th values for positions 
-  separate(col = top_right,into = c('square_tr','pos_tr','row_tr','col_tr'),remove = TRUE)
+  separate(col = top_right,into = c('square_tr','pos_tr','row_tr','col_tr'),remove = FALSE) %>% 
+  separate(col = top_left,into = c('square_tl','pos_tl','row_tl','col_tl'),remove = FALSE) %>% 
+  separate(col = bottom_right,into = c('square_br','pos_br','row_br','col_br'),remove = FALSE) %>% 
+  pivot_longer(top_right:col_br)
+```
+
+
+
+
+```{r}
+map_board_df %>% 
+  filter(value == 'R1') %>% 
+  pull() %>% 
+  
 ```
 
