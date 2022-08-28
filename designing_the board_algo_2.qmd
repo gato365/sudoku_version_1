@@ -1,0 +1,17 @@
+---
+title: "Checking_Fit"
+format: html
+editor: visual
+---
+
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+map_board_df = readxl::read_xlsx('empty_board.xlsx',sheet = 'mapping') %>% 
+  mutate(values = sample(4,4)) %>%  ## Determine th values for positions 
+  separate(col = top_right,into = c('square_tr','pos_tr','row_tr','col_tr'),remove = TRUE)
+```
+
