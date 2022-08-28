@@ -22,9 +22,35 @@ map_board_df = readxl::read_xlsx('empty_board.xlsx',sheet = 'mapping') %>%
 
 
 ```{r}
-map_board_df %>% 
-  filter(value == 'R1') %>% 
-  pull() %>% 
+checkSpec = function(spec,df){
+  result = df %>% 
+    filter(value == spec) %>% 
+    pull(values) %>% 
+    setequal(1:4)
+  return(result)
+}
+
+determine_rc = function(specType,df) {
   
+  return(checkSpec(paste0(specType,1),df) +
+           checkSpec(paste0(specType,2),df)  == 2)
+}
+
+
+conductAllDetemineChecks = function(df){
+  fiveChecks = determine_rc('C',df) +
+    determine_rc('R',df) +
+    checkSpec('TR',df) +
+    checkSpec('TL',df) +
+    checkSpec('BR',df) 
+  
+  return(fiveChecks == 5)
+}
+
+```
+
+
+```{r}
+conductAllDetemineChecks(map_board_df)
 ```
 
