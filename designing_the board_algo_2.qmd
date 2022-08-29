@@ -4,7 +4,6 @@ format: html
 editor: visual
 ---
 
-
 ```{r}
 library(tidyverse)
 ```
@@ -16,10 +15,10 @@ map_board_df = readxl::read_xlsx('empty_board.xlsx',sheet = 'mapping') %>%
   separate(col = top_left,into = c('square_tl','pos_tl','row_tl','col_tl'),remove = FALSE) %>% 
   separate(col = bottom_right,into = c('square_br','pos_br','row_br','col_br'),remove = FALSE) %>% 
   pivot_longer(top_right:col_br)
+
+
+all_possible_df =readxl::read_xlsx('empty_board.xlsx',sheet = 'all_possible_combinations')
 ```
-
-
-
 
 ```{r}
 checkSpec = function(spec,df){
@@ -30,14 +29,27 @@ checkSpec = function(spec,df){
   return(result)
 }
 
-determine_rc = function(specType,df) {
+determine_rc = function(specType,df,num_checks = 2) {
+  
+## Checks just 2 columns and rows
+  if(num_checks == 2){
   
   return(checkSpec(paste0(specType,1),df) +
            checkSpec(paste0(specType,2),df)  == 2)
+    
+  } else if(num_checks == 4){ ## checks all rows and columns
+        return(checkSpec(paste0(specType,1),df) +
+           checkSpec(paste0(specType,2),df) +
+             checkSpec(paste0(specType,3),df) + 
+             checkSpec(paste0(specType,4),df) == 4)
+    
+    }
 }
 
 
-conductAllDetemineChecks = function(df){
+conductAllDetemineChecks = function(df,num_checks = 2){
+  
+  if(num_checks == 2){
   fiveChecks = determine_rc('C',df) +
     determine_rc('R',df) +
     checkSpec('TR',df) +
@@ -45,12 +57,37 @@ conductAllDetemineChecks = function(df){
     checkSpec('BR',df) 
   
   return(fiveChecks == 5)
+} else if(num_checks == 4){
+  sixChecks = determine_rc('C',df) +
+    determine_rc('R',df) +
+    checkSpec('TR',df) +
+    checkSpec('TL',df) +
+    checkSpec('BR',df) +
+    checkSpec('BL',df)
+  
+  return(sixChecks == 6)
+}
+  
 }
 
 ```
 
-
 ```{r}
-conductAllDetemineChecks(map_board_df)
+conductAllDetemineChecks(map_board_df,num_checks = 2)
 ```
 
+```{r}
+
+num_vec = c(1,2,3,4)
+all_possible_df = expand.grid(num_vec,num_vec,num_vec,num_vec) %>% 
+  data.frame() %>% 
+  mutate(sum_cols = Var1 + Var2 + Var3 + Var4) %>% 
+  filter(setequal(c(Var1,Var2,Var3,Var4),1:4) )   
+  
+
+```
+
+Add the Bottom Left Square to \*map_board_df\*
+
+```{}
+```
