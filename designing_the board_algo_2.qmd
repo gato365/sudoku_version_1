@@ -11,10 +11,13 @@ library(tidyverse)
 ```{r}
 map_board_df = readxl::read_xlsx('empty_board.xlsx',sheet = 'mapping') %>% 
   mutate(values = sample(4,4)) %>%  ## Determine th values for positions 
-  separate(col = top_right,into = c('square_tr','pos_tr','row_tr','col_tr'),remove = FALSE) %>% 
-  separate(col = top_left,into = c('square_tl','pos_tl','row_tl','col_tl'),remove = FALSE) %>% 
-  separate(col = bottom_right,into = c('square_br','pos_br','row_br','col_br'),remove = FALSE) %>% 
-  pivot_longer(top_right:col_br)
+  separate(col = top_left_tl,into = c('square_tl','pos_tl','row_tl','col_tl'),
+           remove = FALSE) %>% 
+  separate(col = top_right_tr,into = c('square_tr','pos_tr','row_tr','col_tr'),
+           remove = FALSE) %>% 
+  separate(col = bottom_left_bl,into = c('square_bl','pos_bl','row_bl','col_bl'),remove = FALSE) %>% 
+  separate(col = bottom_right_br,into = c('square_br','pos_br','row_br','col_br'),remove = FALSE) %>% 
+  pivot_longer(top_right_tr:col_bl)
 
 
 all_possible_df =readxl::read_xlsx('empty_board.xlsx',sheet = 'all_possible_combinations')
@@ -73,21 +76,22 @@ conductAllDetemineChecks = function(df,num_checks = 2){
 ```
 
 ```{r}
-conductAllDetemineChecks(map_board_df,num_checks = 2)
+map_board_df %>% 
+  filter(!str_detect(name,'br') | !str_detect(name,'bottom_right_br')) %>% 
+conductAllDetemineChecks(num_checks = 2)
 ```
 
 ```{r}
 
-num_vec = c(1,2,3,4)
-all_possible_df = expand.grid(num_vec,num_vec,num_vec,num_vec) %>% 
-  data.frame() %>% 
-  mutate(sum_cols = Var1 + Var2 + Var3 + Var4) %>% 
-  filter(setequal(c(Var1,Var2,Var3,Var4),1:4) )   
+map_board_df %>% 
+  filter(str_detect(name,'br') | str_detect(name,'bottom_right'))   
   
 
 ```
 
 Add the Bottom Left Square to \*map_board_df\*
 
-```{}
+```{r}
+map_board_df %>% 
+conductAllDetemineChecks(num_checks = 4)
 ```
